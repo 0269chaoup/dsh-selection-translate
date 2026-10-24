@@ -1,0 +1,5 @@
+# pnpm settings (pnpm 10.6+/11 reads these here, not from package.json).
+# esbuild is the only dependency with an install script; its postinstall makes
+# sure the platform binary is in place. Everything else installs prebuilt.
+allowBuilds:
+  esbuild: true

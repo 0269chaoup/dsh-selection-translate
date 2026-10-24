@@ -1,0 +1,6 @@
+# Normalise line endings in the repository, keep them as-is on checkout.
+* text=auto eol=lf
+
+# The package icon and any locale JSON are data, not prose.
+*.svg  text
+*.json text

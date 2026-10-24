@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Selection Translate",
+    "description": "Select text in the conversation, click the floating button, and read the LLM translation in a floating card. The call runs on the Host, so no model credential reaches the browser."
+  }
+}

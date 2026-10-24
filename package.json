@@ -1,0 +1,112 @@
+{
+  "name": "dsh-selection-translate",
+  "description": "DSH Web GUI selection translate: select text in the conversation, click the floating button, read the LLM translation in a floating card. Host keeps the API key.",
+  "version": "0.3.0",
+  "type": "module",
+  "author": {
+    "name": "Zheng",
+    "email": "0269chaoup@users.noreply.github.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/0269chaoup/dsh-selection-translate#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0269chaoup/dsh-selection-translate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/0269chaoup/dsh-selection-translate/issues"
+  },
+  "keywords": [
+    "deepseek",
+    "harness",
+    "dsh",
+    "dsh-plugin",
+    "translation",
+    "selection",
+    "web-gui",
+    "llm"
+  ],
+  "icon": "icon.svg",
+  "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "types": "./lib/types/client/index.d.ts",
+      "default": "./lib/client.js"
+    },
+    "./typert": {
+      "types": "./lib/types/typert.host.d.ts",
+      "default": "./lib/typert.host.js"
+    },
+    "./remote": {
+      "types": "./lib/types/typert.remote.d.ts",
+      "default": "./lib/typert.remote.js"
+    },
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/**/*.js",
+    "lib/types/**/*.d.ts",
+    "locale/*.json",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-api-remotes",
+        "@deepseek-ai/dsh-client-ui-layout"
+      ]
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.5",
+    "react": "^18.2.0",
+    "@deepseek-ai/schemastery": "^3.18.1"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-typert-protocol": "0.2.1-rc.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "~4.0.5",
+    "@deepseek-ai/dsh-llm": "0.2.1-rc.2",
+    "@deepseek-ai/schemastery": "~3.18.5",
+    "@types/node": "^22.20.0",
+    "@types/react": "~18.3.1",
+    "@types/react-dom": "^18.3.5",
+    "esbuild": "^0.25.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "~5.7.2"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepack": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "smoke": "node scripts/smoke.mjs",
+    "verify": "npm run typecheck && npm run build && npm run smoke",
+    "verify:tarball": "node scripts/verify-tarball.mjs",
+    "verify:release": "npm run verify && pnpm pack && npm run verify:tarball",
+    "clean": "node -e \"require('node:fs').rmSync('lib',{recursive:true,force:true})\"",
+    "verify:host": "python3 scripts/verify-host-boot.py",
+    "verify:host:serve": "python3 scripts/verify-host-boot.py --serve"
+  }
+}

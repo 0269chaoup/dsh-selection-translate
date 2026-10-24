@@ -1,0 +1,14 @@
+node_modules/
+lib/
+.research/
+.pnpm-store/
+*.log
+
+# `npm pack` output (rebuild + re-pack instead of committing a tarball)
+*.tgz
+
+# Local manifest snapshots taken while editing
+package.json.bak-*
+
+# Sandbox DSH_HOME + boot logs from scripts/verify-host-boot.py and dist checks
+.verify/

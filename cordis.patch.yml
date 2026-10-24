@@ -1,0 +1,40 @@
+# Bundle patch layer for dsh-selection-translate.
+#
+# Installed as a profile bundle (`dsh.bundle.patch` in package.json), so the row
+# is inserted after the profile's own layers. The row is a bare package name:
+# the Node entry (`exports["."]`, a Cordis Service class) runs in the Host
+# process, and the `dsh.client` declaration makes the browser half
+# (`exports["./client"]`) load in the Web GUI.
+#
+# The `config` block below is the plugin's own settings. Every field is
+# optional; the values shown are the schema defaults. These fields are
+# `volatile`, so the same values can be edited from the Web GUI — the plugin
+# row's Configure page, or the gear inside the translation card — and a save
+# writes them into the profile's user layer (this file stays as the shipped
+# default). Hand-editing this block still works and remains the fallback for a
+# deployment that serves no settings service.
+- insert:
+    - id: selection-translate
+      name: 'dsh-selection-translate'
+      config:
+        # Master switch for the whole feature (Host Remote + browser overlay).
+        enabled: true
+        # Source language tag, or `auto` to let the model detect it.
+        sourceLanguage: en
+        # Destination language. `auto` follows the Web GUI's interface language;
+        # a concrete BCP 47 tag always translates into that language.
+        targetLanguage: zh-CN
+        # Translation style: fluent | literal | technical | preserve-tone.
+        style: fluent
+        # Extra instruction block appended to the system prompt as rule 7.
+        customInstructions: ''
+        # `provider/model` override, e.g. `workbuddy/cn:deepseek-v4.1-flash`.
+        # Blank resolves the Host's configured default model instead.
+        model: ''
+        # Shortest / longest selection one request accepts, in UTF-16 code units.
+        minChars: 2
+        maxChars: 4000
+        # Translation cache entries on the Host; 0 disables the cache.
+        cacheSize: 64
+        # Output-token ceiling of one translation call.
+        maxOutputTokens: 2048
