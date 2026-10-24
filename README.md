@@ -487,7 +487,7 @@ Once, in `~/.dsh/profiles/desktop/package.json`:
 ```json
 {
   "dependencies": {
-    "dsh-selection-translate": "link:/Users/zack/Projects/dsh-translation"
+    "dsh-selection-translate": "link:/absolute/path/to/dsh-translation"
   },
   "dsh": {
     "profile": {
@@ -521,7 +521,7 @@ Three things worth knowing about the linked form:
 - **The linked package's own dependencies come from this repo.** pnpm does not
   install the dependencies of a `link:` dependency, so `zod` and
   `@deepseek-ai/dsh-typert-protocol` resolve out of
-  `/Users/zack/Projects/dsh-translation/node_modules`. Run `pnpm install` here as
+  `<checkout>/node_modules`. Run `pnpm install` here as
   well, and do not delete this repo's `node_modules` while the profile is linked.
 - **Use pnpm 11** (the version the profile was installed with; it is recorded as
   `packageManager` in `~/.dsh/profiles/desktop/node_modules/.modules.yaml`, and
