@@ -55,5 +55,30 @@ jobs:
           echo "tag=${GITHUB_REF_NAME} package=${packaged}"
           test "${GITHUB_REF_NAME}" = "${packaged}"
 
+      # Prints the facts needed to tell "the CLI is too old" apart from "this
+      # workflow is not the trusted publisher npm knows about": the OIDC request
+      # endpoint only exists when `id-token: write` is honoured, and npm only
+      # exchanges a token when the package's trusted publisher matches the
+      # repository and this workflow file.
+      - name: Diagnose the publish identity
+        run: |
+          set -euo pipefail
+          echo "npm: $(npm --version)"
+          echo "node: $(node --version)"
+          echo "registry: $(npm config get registry)"
+          echo "repo: ${GITHUB_REPOSITORY}"
+          echo "ref: ${GITHUB_REF}"
+          echo "workflow_ref: ${GITHUB_WORKFLOW_REF}"
+          if [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then
+            echo "id-token endpoint: present"
+          else
+            echo "id-token endpoint: MISSING"
+          fi
+          if [ -n "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "NODE_AUTH_TOKEN: set"
+          else
+            echo "NODE_AUTH_TOKEN: unset (expected for trusted publishing)"
+          fi
+
       # --provenance ties the tarball to this workflow run and commit.
       - run: npm publish --provenance --access public
