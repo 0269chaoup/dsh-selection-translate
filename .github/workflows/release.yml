@@ -1,0 +1,57 @@
+# Release workflow: one tag push publishes the package from CI, with provenance.
+#
+# No token is stored anywhere: the job authenticates to the registry through a
+# GitHub OIDC exchange ("trusted publishing", bound once with
+# `npm trust github dsh-selection-translate --repo 0269chaoup/dsh-selection-translate
+# --file release.yml --allow-publish`). That binding is also what lets npm attach
+# a provenance attestation, which is why this repository is public: the badge on
+# the package page is only verifiable when the source is.
+#
+# Trigger is a version tag, and the job refuses to publish when the tag and
+# package.json disagree — a mismatched release is the one mistake a tag-driven
+# pipeline makes expensive to undo.
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Required for the OIDC token npm exchanges for a short-lived publish grant.
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Trusted publishing needs a recent npm; the one bundled with Node is older.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm install --global npm@latest
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - run: pnpm install --frozen-lockfile
+
+      # The same gates that run locally: types, build, and the offline smoke.
+      - run: pnpm run verify
+
+      - name: Check the tag matches the package version
+        run: |
+          set -euo pipefail
+          packaged="v$(node -p "require('./package.json').version")"
+          echo "tag=${GITHUB_REF_NAME} package=${packaged}"
+          test "${GITHUB_REF_NAME}" = "${packaged}"
+
+      # --provenance ties the tarball to this workflow run and commit.
+      - run: npm publish --provenance --access public
